@@ -1,10 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# SPDX-License-Identifier: Apache-2.0
-
-# DeepSpeed Team
-"""
-Part of the code was adopted from https://github.com/microsoft/Megatron-DeepSpeed/blob/main/megatron/data/dataset_utils.py
-"""
 import torch
 from torch.utils.data import Dataset, Subset, ConcatDataset
 from torch.nn.utils.rnn import pad_sequence

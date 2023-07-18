@@ -1,7 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# SPDX-License-Identifier: Apache-2.0
-
-# DeepSpeed Team
 GLOBAL_BATCH_SIZE = 32
 MICRO_BATCH_SIZE = 4
 

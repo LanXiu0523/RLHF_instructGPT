@@ -1,7 +1,3 @@
-# Copyright (c) Microsoft Corporation.
-# SPDX-License-Identifier: Apache-2.0
-
-# DeepSpeed Team
 from datasets import load_dataset
 from torch.utils.data import Subset
 import re
