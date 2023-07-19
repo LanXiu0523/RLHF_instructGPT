@@ -12,3 +12,19 @@ pip install -r requirements.txt
 ```
 
 ## Run
+
+## process_description
+### SFT
+```python
+for epoch in range(num_train_epochs):
+    model.train()
+    for batch in train_dataloader:
+        outputs = model(**batch, use_cache=False)
+        loss = outputs.loss
+        model.backward(loss)
+        model.step()
+```
+
+### RM
+
+
