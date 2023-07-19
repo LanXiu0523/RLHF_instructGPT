@@ -1,8 +1,6 @@
 #!/bin/bash
-# Copyright (c) Microsoft Corporation.
-# SPDX-License-Identifier: Apache-2.0
+set -x
 
-# DeepSpeed Team
 OUTPUT=$1
 ZERO_STAGE=$2
 if [ "$OUTPUT" == "" ]; then
