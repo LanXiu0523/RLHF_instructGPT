@@ -34,3 +34,4 @@ readme
 封装入口脚本
 多数据集
 prompt
+chinese
