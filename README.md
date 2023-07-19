@@ -27,4 +27,10 @@ for epoch in range(num_train_epochs):
 
 ### RM
 
-
+## TODO
+readme
+多机
+脚本参数
+封装入口脚本
+多数据集
+prompt
