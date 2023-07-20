@@ -12,6 +12,14 @@ pip install -r requirements.txt
 ```
 
 ## Run
+```bash
+source venv/bin/activate
+```
+单机单卡：
+```bash
+bash train.sh sgl_gpu
+```
+:wq
 
 ## process_description
 ### SFT
