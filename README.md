@@ -15,11 +15,14 @@ pip install -r requirements.txt
 ```bash
 source venv/bin/activate
 ```
-单机单卡：
+X单机单卡：
 ```bash
 bash train.sh sgl_gpu
 ```
-:wq
+V单机多卡：
+```bash
+bash train.sh sgl_mach
+```
 
 ## process_description
 ### SFT
@@ -59,12 +62,3 @@ for epoch in range(train_epochs):
                 average_reward += exp_data["rewards"].mean()
                 inner_iter += 1
 ```
-
-## TODO
-readme
-多机
-脚本参数
-封装入口脚本
-多数据集
-prompt
-chinese
