@@ -8,11 +8,11 @@ if [ "$DEV_ENV" == "" ]; then
 fi
 
 
-#bash applications/scripts/$DEV_ENV/1_trainSFT_1.3b.sh
-#bash applications/scripts/$DEV_ENV/2_trainRM_350m.sh
-#bash applications/scripts/$DEV_ENV/3_trainPPO_1.3b.sh
-#bash applications/scripts/inference/RM_eval.sh
-#bash applications/scripts/inference/prompt_eval.sh
+bash applications/scripts/$DEV_ENV/1_trainSFT_1.3b.sh
+bash applications/scripts/$DEV_ENV/2_trainRM_350m.sh
+bash applications/scripts/$DEV_ENV/3_trainPPO_1.3b.sh
+bash applications/scripts/inference/RM_eval.sh
+bash applications/scripts/inference/prompt_eval.sh
 
 
 SAVE_MODEL="true"
