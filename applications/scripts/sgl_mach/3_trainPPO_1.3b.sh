@@ -20,7 +20,6 @@ Num_Padding_at_Beginning=1
 Actor_Lr=9.65e-6
 Critic_Lr=5e-6
 
-
 deepspeed applications/train/3_trainPPO.py \
     --data_path 'datafile/Dahoas/rm-static' \
     --data_split 2,4,4 \

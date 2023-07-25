@@ -11,6 +11,7 @@ if [ "$ZERO_STAGE" == "" ]; then
 fi
 mkdir -p $OUTPUT $OUTPUT/2_model_RM $OUTPUT/logs
 
+
 deepspeed applications/train/2_trainRM.py \
     --data_path  'datafile/Dahoas/rm-static' \
     --data_split 2,4,4 \
