@@ -12,16 +12,17 @@ pip install -r requirements.txt
 ```
 
 ## Run
-```bash
-source venv/bin/activate
-```
-单机单卡：
+**1.单机单卡：**
 ```bash
 bash train.sh sgl_gpu
 ```
-单机多卡：
+**2.单机多卡：**
 ```bash
 bash train.sh sgl_mach
+```
+**3.多机多卡**
+```bash
+bash train.sh mul_mach
 ```
 
 ## process_description
