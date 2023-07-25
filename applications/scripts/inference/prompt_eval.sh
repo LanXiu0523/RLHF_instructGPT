@@ -1,5 +1,15 @@
 #!/bin/bash
+set -x
+
+OUTPUT=$1
+ZERO_STAGE=$2
+if [ "$OUTPUT" == "" ]; then
+    OUTPUT=./output
+fi
+
+
 export CUDA_VISIBLE_DEVICES=0
+
 python applications/inference/prompt_eval.py \
     --model_name_or_path_pretrain 'datafile/facebook/opt-1.3b' \
     --model_name_or_path_sft 'output/1_model_SFT' \
