@@ -7,7 +7,7 @@ if [ "$OUTPUT" == "" ]; then
     OUTPUT=./output
 fi
 if [ "$ZERO_STAGE" == "" ]; then
-    ZERO_STAGE=0
+    ZERO_STAGE=2
 fi
 
 
@@ -31,7 +31,7 @@ deepspeed applications/train/1_trainSFT.py \
     --lr_scheduler_type cosine \
     --num_warmup_steps 0 \
     --seed 1234 \
-    --zero_stage 2 \
+    --zero_stage $ZERO_STAGE \
     --deepspeed \
     --output_dir $OUTPUT/1_model_SFT \
     2>&1 | tee $OUTPUT/logs/1_training_SFT.log
