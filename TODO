@@ -1,5 +1,8 @@
 1.
 ```
+fix mul_mach aptget pipeline
+跑通 mul_mach 30b
+
 加model算法
 化简train依照s3:wq
 ```
@@ -7,6 +10,8 @@
 2.
 ```
 chinese
-多数据集
+洗chinese dataset
+baichuan7b
+
 ```
 
