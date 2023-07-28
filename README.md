@@ -26,4 +26,4 @@ bash train.sh mul_mach
 ```
 
 ## Acknowledgement
-This project is built upon the codebase of [DeepSpeedExamples](https://github.com/microsoft/DeepSpeedExamples), sincere thanks to the hard work of Microsoft.
+This project is built upon the codebase of [DeepSpeedExamples](https://github.com/microsoft/DeepSpeedExamples). Sincere thanks to Microsoft for their hard work!
