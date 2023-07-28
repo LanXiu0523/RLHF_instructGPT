@@ -1,4 +1,4 @@
-# instructGPT
+# RLHF_instructGPT
 Reproduce instructGPT
 
 ## Install
