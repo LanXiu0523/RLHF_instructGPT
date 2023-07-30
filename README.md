@@ -2,7 +2,7 @@
 Reproduce instructGPT
 
 ## Install
-```
+```bash
 git clone git@github.com:LanXiu-0523/RLHF_instructGPT.git
 cd RLHF_instructGPT
 
@@ -20,7 +20,7 @@ bash train.sh sgl_gpu
 ```bash
 bash train.sh sgl_mach
 ```
-**3.多机多卡**
+**XXX3.多机多卡**
 ```bash
 # 首次运行
 bash applications/scripts/mul_mach/apt-install.sh
