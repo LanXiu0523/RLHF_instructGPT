@@ -4,11 +4,21 @@ Reproduce instructGPT
 ## Install
 ```bash
 git clone git@github.com:LanXiu-0523/RLHF_instructGPT.git
-cd RLHF_instructGPT
+cd RLHF_instructGPT/
 
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+## Download local datafile
+中国huggingface连接有问题，需要将dataset和model下载到本地
+```bash
+cd RLHF_instructGPT/
+mkdir datafile
+cd datafile/
+mkdir Dahoas
+cd Dahoas/
+......
 ```
 
 ## Run
