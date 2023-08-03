@@ -14,10 +14,16 @@ pip install -r requirements.txt
 中国huggingface连接有问题，需要将dataset和model下载到本地
 ```bash
 cd RLHF_instructGPT/
+sudo apt-get install git-lfs
 mkdir datafile
 cd datafile/
+
 mkdir Dahoas
 cd Dahoas/
+git lfs install
+git clone https://huggingface.co/datasets/Dahoas/rm-static
+
+
 ......
 ```
 
