@@ -23,8 +23,17 @@ cd Dahoas/
 git lfs install
 git clone https://huggingface.co/datasets/Dahoas/rm-static
 
+mkdir ../facebook
+cd ../facebook/
+GIT_LFS_SKIP_SMUDGE=1 git clone https://huggingface.co/facebook/opt-350m
+cd opt-350m/
+git lfs pull --include="*.bin"
 
-......
+cd ../
+GIT_LFS_SKIP_SMUDGE=1 git clone https://huggingface.co/facebook/opt-1.3b
+cd opt-1.3b/
+git lfs pull --include="*.bin"
+
 ```
 
 ## Run
