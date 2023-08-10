@@ -17,10 +17,10 @@ cd RLHF_instructGPT/
 sudo apt-get install git-lfs
 mkdir datafile
 cd datafile/
+git lfs install
 
 mkdir Dahoas
 cd Dahoas/
-git lfs install
 git clone https://huggingface.co/datasets/Dahoas/rm-static
 
 mkdir ../facebook
@@ -34,6 +34,12 @@ GIT_LFS_SKIP_SMUDGE=1 git clone https://huggingface.co/facebook/opt-1.3b
 cd opt-1.3b/
 git lfs pull --include="*.bin"
 
+```
+More：
+cd RLHF_instructGPT/
+cd datafile/
+cd Dahoas/
+git clone https://huggingface.co/datasets/Dahoas/full-hh-rlhf
 ```
 
 ## Run
