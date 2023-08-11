@@ -33,9 +33,10 @@ cd ../
 GIT_LFS_SKIP_SMUDGE=1 git clone https://huggingface.co/facebook/opt-1.3b
 cd opt-1.3b/
 git lfs pull --include="*.bin"
-
 ```
+
 More：
+```
 cd RLHF_instructGPT/
 cd datafile/
 cd Dahoas/
