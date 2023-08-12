@@ -41,6 +41,12 @@ cd RLHF_instructGPT/
 cd datafile/
 cd Dahoas/
 git clone https://huggingface.co/datasets/Dahoas/full-hh-rlhf
+git clone https://huggingface.co/datasets/Dahoas/synthetic-instruct-gptj-pairwise
+
+cd ../
+mkdir yitingxie
+cd yitingxie/
+git clone https://huggingface.co/datasets/yitingxie/rlhf-reward-datasets
 ```
 
 ## Run
