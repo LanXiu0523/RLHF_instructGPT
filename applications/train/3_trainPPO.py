@@ -268,6 +268,20 @@ def parse_args():
     parser.add_argument('--only_optimize_lora',
                         action='store_true',
                         help='Only optimize the LoRA parameters.')
+    parser.add_argument(
+        "--actor_lora_learning_rate",
+        type=float,
+        default=5e-4,
+        help=
+        "Initial actor LoRA learning rate (after the potential warmup period) to use."
+    )
+    parser.add_argument(
+        "--critic_lora_learning_rate",
+        type=float,
+        default=5e-4,
+        help=
+        "Initial critic LoRA learning rate (after the potential warmup period) to use."
+    )
     ## Make EMA as an optional feature
     parser.add_argument('--enable_ema',
                         action='store_true',
@@ -288,6 +302,20 @@ def parse_args():
     parser.add_argument('--print_answers',
                         action='store_true',
                         help='Print prompt and answers during training')
+    ## Testing
+    parser.add_argument(
+        '--enable_test_mode',
+        action='store_true',
+        help=
+        'Enable a testing mode that terminates training based on args.test_stop_step'
+    )
+    parser.add_argument(
+        "--test_stop_step",
+        type=int,
+        default=0,
+        help=
+        "Training non-overflow step at which to terminate training during testing."
+    )
 
     parser = deepspeed.add_config_arguments(parser)
     args = parser.parse_args()
@@ -417,6 +445,8 @@ def main():
     # Train!
     print_rank_0("***** Running training *****", args.global_rank)
 
+    non_overflow_step_count = 0
+
     for epoch in range(args.num_train_epochs):
         print_rank_0(
             f"Beginning of Epoch {epoch+1}/{args.num_train_epochs}, Total Generation Batches {min(len(prompt_train_dataloader), len(unsupervised_train_dataloader))}",
@@ -502,6 +532,17 @@ def main():
 
             if args.actor_gradient_checkpointing:
                 rlhf_engine.actor.gradient_checkpointing_disable()
+
+            actor_overflow, critic_overflow = trainer.get_overflow()
+
+            if not actor_overflow and not critic_overflow:
+                non_overflow_step_count += 1
+
+            if args.enable_test_mode and non_overflow_step_count == args.test_stop_step:
+                break
+
+        if args.enable_test_mode:
+            break
 
     if args.output_dir is not None:
         print_rank_0('saving model ...')

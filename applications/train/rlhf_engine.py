@@ -49,7 +49,6 @@ class DeepSpeedRLHFEngine():
         if self.args.enable_ema:
             self.actor_ema = self._init_ema(
                 actor_model_name_or_path=actor_model_name_or_path)
-
         self.critic = self._init_critic(
             critic_model_name_or_path=critic_model_name_or_path)
         self.reward = self._init_reward(
@@ -102,7 +101,8 @@ class DeepSpeedRLHFEngine():
         # Optimizer
         AdamOptimizer = DeepSpeedCPUAdam if self.args.offload else FusedAdam
         optim_params = get_optimizer_grouped_parameters(
-            actor_model, self.args.actor_weight_decay)
+            actor_model, self.args.actor_weight_decay,
+            self.args.actor_lora_learning_rate)
         optim = AdamOptimizer(optim_params,
                               lr=self.args.actor_learning_rate,
                               betas=(0.9, 0.95))
@@ -197,11 +197,9 @@ class DeepSpeedRLHFEngine():
             'train_batch_size'] = self.args.per_device_mini_train_batch_size * torch.distributed.get_world_size(
             ) * self.args.gradient_accumulation_steps
 
-        #TODO(jeff): should not be needed, we should be able to use ds_config above
-        #TODO(jeff): it means we never create the critic w. zero.init context if we are using ZeRO-3
-        # ds_eval_config = get_eval_ds_config(offload=False, stage=self.args.critic_zero_stage)
-        ds_eval_config = get_eval_ds_config(offload=False, stage=0)
-        #Minjia: We need to set train batch size and micro batch size here to pass the sanity check of DeepSpeed engine.
+        ds_eval_config = get_eval_ds_config(offload=False,
+                                            stage=self.args.critic_zero_stage)
+        # We need to set train batch size and micro batch size here to pass the sanity check of DeepSpeed engine.
         ds_eval_config[
             'train_micro_batch_size_per_gpu'] = self.args.per_device_mini_train_batch_size
         ds_eval_config[
@@ -215,7 +213,8 @@ class DeepSpeedRLHFEngine():
             ds_config=ds_eval_config,
             num_padding_at_beginning=self.args.num_padding_at_beginning,
             rlhf_training=True,
-            disable_dropout=self.args.disable_critic_dropout)
+            disable_dropout=self.args.disable_critic_dropout,
+            zero_stage=self.args.critic_zero_stage)
 
         # LoRA
         if self.args.critic_lora_dim > 0:
@@ -229,9 +228,10 @@ class DeepSpeedRLHFEngine():
 
         # Optimizer
         AdamOptimizer = DeepSpeedCPUAdam if self.args.offload else FusedAdam
-        optim_pararms = get_optimizer_grouped_parameters(
-            critic_model, self.args.critic_weight_decay)
-        optim = AdamOptimizer(optim_pararms,
+        optim_params = get_optimizer_grouped_parameters(
+            critic_model, self.args.critic_weight_decay,
+            self.args.critic_lora_learning_rate)
+        optim = AdamOptimizer(optim_params,
                               lr=self.args.critic_learning_rate,
                               betas=(0.9, 0.95))
 
@@ -268,11 +268,9 @@ class DeepSpeedRLHFEngine():
             'train_batch_size'] = self.args.per_device_mini_train_batch_size * torch.distributed.get_world_size(
             ) * self.args.gradient_accumulation_steps
 
-        #TODO(jeff): should not be needed, we should be able to use ds_config above
-        #TODO(jeff): it means we never create the critic w. zero.init context if we are using ZeRO-3
-        # ds_eval_config = get_eval_ds_config(offload=False, stage=zero_stage)
-        ds_eval_config = get_eval_ds_config(offload=False, stage=0)
-        #Minjia: We need to set train batch size and micro batch size here to pass the sanity check of DeepSpeed engine.
+        ds_eval_config = get_eval_ds_config(offload=False, stage=zero_stage)
+
+        # We need to set train batch size and micro batch size here to pass the sanity check of DeepSpeed engine.
         ds_eval_config[
             'train_micro_batch_size_per_gpu'] = self.args.per_device_mini_train_batch_size
         ds_eval_config[
@@ -285,7 +283,9 @@ class DeepSpeedRLHFEngine():
             tokenizer=self.tokenizer,
             ds_config=ds_eval_config,
             num_padding_at_beginning=self.args.num_padding_at_beginning,
-            rlhf_training=True)
+            rlhf_training=True,
+            disable_dropout=self.args.disable_critic_dropout,
+            zero_stage=zero_stage)
 
         reward_engine, *_ = deepspeed.initialize(model=reward_model,
                                                  config=ds_config)
