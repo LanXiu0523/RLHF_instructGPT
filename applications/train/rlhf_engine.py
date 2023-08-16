@@ -9,6 +9,14 @@ from utils.ds_utils import get_train_ds_config, get_eval_ds_config
 from utils.module.lora import convert_linear_layer_to_lora, only_optimize_lora_parameters
 from utils.model.model_utils import create_hf_model, create_critic_model
 from utils.utils import get_optimizer_grouped_parameters
+"""
+TODOs:
+  * support HF models for critic (for debugging), must be a previously saved ckpt from step-2
+  * determine ds_config/zero_stage based on model size, gpu style, world size, etc
+    - get model size by creating simple meta model
+    - 1.3b: zero-2 for actor/ref models, zero-0 for others
+    - 13b+: zero-3 for all models
+"""
 
 
 def log_init(model_name, stime=None):
@@ -62,7 +70,10 @@ class DeepSpeedRLHFEngine():
             pin_parameters=(not self.args.unpin_actor_parameters),
             tp_gather_partition_size=self.args.tp_gather_partition_size,
             max_out_tokens=self.args.max_prompt_seq_len +
-            self.args.max_answer_seq_len)
+            self.args.max_answer_seq_len,
+            enable_tensorboard=self.args.enable_tensorboard,
+            tb_path=self.args.tensorboard_path,
+            tb_name="step3_actor")
         ds_config[
             'train_micro_batch_size_per_gpu'] = self.args.per_device_mini_train_batch_size
         #TODO(jeff): we should probably set grad accumlation steps here as well for clarity
@@ -171,8 +182,12 @@ class DeepSpeedRLHFEngine():
 
     def _init_critic(self, critic_model_name_or_path):
         stime = log_init("Critic")
-        ds_config = get_train_ds_config(offload=self.args.offload,
-                                        stage=self.args.critic_zero_stage)
+        ds_config = get_train_ds_config(
+            offload=self.args.offload,
+            stage=self.args.critic_zero_stage,
+            enable_tensorboard=self.args.enable_tensorboard,
+            tb_path=self.args.tensorboard_path,
+            tb_name="step3_critic")
         ds_config[
             'train_micro_batch_size_per_gpu'] = self.args.per_device_mini_train_batch_size
         #TODO(jeff): we should probably set grad accumlation steps here as well for clarity
@@ -182,7 +197,14 @@ class DeepSpeedRLHFEngine():
 
         #TODO(jeff): should not be needed, we should be able to use ds_config above
         #TODO(jeff): it means we never create the critic w. zero.init context if we are using ZeRO-3
+        # ds_eval_config = get_eval_ds_config(offload=False, stage=self.args.critic_zero_stage)
         ds_eval_config = get_eval_ds_config(offload=False, stage=0)
+        #Minjia: We need to set train batch size and micro batch size here to pass the sanity check of DeepSpeed engine.
+        ds_eval_config[
+            'train_micro_batch_size_per_gpu'] = self.args.per_device_mini_train_batch_size
+        ds_eval_config[
+            'train_batch_size'] = self.args.per_device_mini_train_batch_size * torch.distributed.get_world_size(
+            ) * self.args.gradient_accumulation_steps
 
         # Model
         critic_model = create_critic_model(
@@ -244,7 +266,14 @@ class DeepSpeedRLHFEngine():
 
         #TODO(jeff): should not be needed, we should be able to use ds_config above
         #TODO(jeff): it means we never create the critic w. zero.init context if we are using ZeRO-3
+        # ds_eval_config = get_eval_ds_config(offload=False, stage=zero_stage)
         ds_eval_config = get_eval_ds_config(offload=False, stage=0)
+        #Minjia: We need to set train batch size and micro batch size here to pass the sanity check of DeepSpeed engine.
+        ds_eval_config[
+            'train_micro_batch_size_per_gpu'] = self.args.per_device_mini_train_batch_size
+        ds_eval_config[
+            'train_batch_size'] = self.args.per_device_mini_train_batch_size * torch.distributed.get_world_size(
+            ) * self.args.gradient_accumulation_steps
 
         # Model
         reward_model = create_critic_model(
