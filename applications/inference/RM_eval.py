@@ -96,6 +96,11 @@ def run_comparison():
     args = parse_args()
 
     device = torch.device("cuda:0")
+    os.environ['RANK'] = '0'
+    os.environ['WORLD_SIZE'] = '1'
+    os.environ['MASTER_ADDR'] = '127.0.0.1'
+    os.environ['MASTER_PORT'] = '8888'
+    torch.distributed.init_process_group(backend='nccl') 
 
     rm_model, tokenizer = load_stuff(args.model_name_or_path,
                                      args.num_padding_at_beginning)
